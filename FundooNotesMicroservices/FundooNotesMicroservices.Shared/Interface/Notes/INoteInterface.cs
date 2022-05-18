@@ -10,13 +10,13 @@ namespace FundooNotesMicroservices.Shared.Interface
     public interface INoteInterface
     {
         public NotesModel CreateNotes(NotesModel userNotes, string Id);
-        public Task<NotesModel> UpdateNote(string email, NotesModel updateNote, string noteId);
-        public NotesModel DeleteNote(string email, string noteId);
-        public NotesModel GetNoteById(string email, string noteId);
-        public Task<List<NotesModel>> GetAllNotes(string email);
-        public NotesModel IsPinned(string email, string noteId);
-        public NotesModel IsTrash(string email, string noteId);
-        public NotesModel IsArchive(string email, string noteId);
+        public Task<NotesModel> UpdateNote( NotesModel updateNote, string noteId);
+        //public NotesModel DeleteNote(string email, string noteId);
+        public NotesModel GetNoteById(string noteId);
+        public Task<List<NotesModel>> GetAllNotes();
+        public NotesModel IsPinned( string noteId);
+        public NotesModel IsTrash(string noteId);
+        public NotesModel IsArchive(string noteId);
         //public NotesModel ColorChange(string noteID, string color);
         //public NotesModel UploadImage(string noteId);
     }

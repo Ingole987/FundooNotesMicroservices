@@ -70,7 +70,7 @@ namespace FundooNotesMicroservices.Shared.Service
             }
         }
 
-        public NotesModel GetNoteById(string email, string noteId)
+        public NotesModel GetNoteById(string noteId)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace FundooNotesMicroservices.Shared.Service
             
         }
 
-        public async Task<List<NotesModel>> GetAllNotes(string email)
+        public async Task<List<NotesModel>> GetAllNotes()
         {
             try
             {
@@ -133,7 +133,7 @@ namespace FundooNotesMicroservices.Shared.Service
 
 
 
-        public async Task<NotesModel> UpdateNote(string email, NotesModel updateNote, string noteId)
+        public async Task<NotesModel> UpdateNote(NotesModel updateNote, string noteId)
         {
             if (noteId == null)
             {
@@ -156,7 +156,7 @@ namespace FundooNotesMicroservices.Shared.Service
             return null;
         }
 
-        public NotesModel IsPinned(string email, string noteId)
+        public NotesModel IsPinned(string noteId)
         {
             if (noteId == null)
             {
@@ -183,7 +183,7 @@ namespace FundooNotesMicroservices.Shared.Service
             return null;
         }
 
-        public NotesModel IsArchive(string email, string noteId)
+        public NotesModel IsArchive(string noteId)
         {
             if (noteId == null)
             {
@@ -211,7 +211,7 @@ namespace FundooNotesMicroservices.Shared.Service
             return null;
         }
 
-        public NotesModel IsTrash(string email, string noteId)
+        public NotesModel IsTrash(string noteId)
         {
             if (noteId == null)
             {
@@ -238,23 +238,7 @@ namespace FundooNotesMicroservices.Shared.Service
             return null;
         }
 
-        public NotesModel DeleteNote(string email, string noteId)
-        {
-            if (noteId == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            var result = _cosmosContainer.GetItemLinqQueryable<NotesModel>(true).Where(b => b.NoteId == noteId)
-                            .AsEnumerable().FirstOrDefault();
-
-            if (result.IsTrash == true)
-            {
-                _cosmosContainer.DeleteItemAsync<NotesModel>(noteId, new PartitionKey(noteId));
-                return result;
-            }
-            return null;
-        }
+        
 
     }
 }
