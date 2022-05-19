@@ -10,9 +10,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
 namespace FundooNotesMicroservices.AzureFunctions.Users
@@ -52,7 +50,7 @@ namespace FundooNotesMicroservices.AzureFunctions.Users
 
         [FunctionName("UserLogin")]
         [OpenApiOperation(operationId: "UserLogin", tags: new[] { "Users" })]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserLoginModel), Required = true, Description = "User Login.")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserLoginModel), Required = true, Description = "User Logged.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(UserLoginResponse), Description = "The OK response")]
         public async Task<IActionResult> UserLogin([HttpTrigger(AuthorizationLevel.Anonymous, "post",
                 Route = "FundooUsers/{Login}")] HttpRequest req,

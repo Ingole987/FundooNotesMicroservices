@@ -3,6 +3,12 @@
     "FundooNotesMicroservices.AzureFunctions.Notes": {
       "commandName": "Project",
       "commandLineArgs": "host start --pause-on-error --port 5860"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 30560,
+      "useSSL": false
     }
   }
 }

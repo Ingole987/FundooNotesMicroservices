@@ -48,9 +48,10 @@ namespace FundooNotesMicroservices.Shared.Service
         {
             try
             {
+                UserModel userModel = new UserModel();
                 if (string.IsNullOrEmpty(_containerName))
                     throw new Exception("No Digital Main collection defined!");
-                userNotes.Id = Guid.NewGuid().ToString();
+                userModel.Id = Guid.NewGuid().ToString();
                 using (var result = _cosmosContainer.CreateItemAsync<NotesModel>(userNotes, new PartitionKey(userNotes.NoteId)))
                 {
                     return result.Result.Resource;
@@ -238,7 +239,20 @@ namespace FundooNotesMicroservices.Shared.Service
             return null;
         }
 
-        
+        public NotesModel DeleteNote(string noteId)
+        {
+            if (noteId == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            var result = _cosmosContainer.GetItemLinqQueryable<NotesModel>(true).Where(b => b.NoteId == noteId)
+                            .AsEnumerable().FirstOrDefault();
+
+
+            _cosmosContainer.DeleteItemAsync<NotesModel>(noteId, new PartitionKey(noteId));
+            return result;
+        }
 
     }
 }

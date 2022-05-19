@@ -74,7 +74,7 @@ namespace FundooNotesMicroservices.AzureFunctions.Notes
                 return new UnauthorizedResult();
             }
 
-            var response = _noteServices.GetAllNotes(result.Email);
+            var response = await  _noteServices.GetAllNotes();
 
             return new OkObjectResult(response);
         }
@@ -85,7 +85,7 @@ namespace FundooNotesMicroservices.AzureFunctions.Notes
         [OpenApiParameter(name: "noteId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The noteId parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(NotesModel), Description = "The OK response")]
         public IActionResult GetNoteById(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "FundooNotes/GetAll/Id")] HttpRequest req, string noteId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "FundooNotes/GetAll/{noteId}")] HttpRequest req, string noteId)
         {
             var result = _JWTService.ValidateJWT(req);
             if (!result.IsValid)
@@ -105,7 +105,7 @@ namespace FundooNotesMicroservices.AzureFunctions.Notes
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(NotesModel), Required = true, Description = "Update note details.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(NotesModel), Description = "The OK response")]
         public async Task<IActionResult> UpdateNote(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "FundooNotes/Update")] HttpRequest req, string noteId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "FundooNotes/Update/{noteId}")] HttpRequest req, string noteId)
         {
             var result = _JWTService.ValidateJWT(req);
             if (!result.IsValid)
@@ -125,7 +125,7 @@ namespace FundooNotesMicroservices.AzureFunctions.Notes
         [OpenApiParameter(name: "noteId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The noteId parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(NotesModel), Description = "The OK response")]
         public async Task<IActionResult> Pin(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "FundooNotes/IsPinned")] HttpRequest req, string noteId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "FundooNotes/IsPinned/{noteId}")] HttpRequest req, string noteId)
         {
             var result = _JWTService.ValidateJWT(req);
             if (!result.IsValid)
@@ -144,7 +144,7 @@ namespace FundooNotesMicroservices.AzureFunctions.Notes
         [OpenApiParameter(name: "noteId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The noteId parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(NotesModel), Description = "The OK response")]
         public async Task<IActionResult> Archive(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "FundooNotes/IsArchive")] HttpRequest req, string noteId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "FundooNotes/IsArchive/{noteId}")] HttpRequest req, string noteId)
         {
             var result = _JWTService.ValidateJWT(req);
             if (!result.IsValid)
@@ -163,7 +163,7 @@ namespace FundooNotesMicroservices.AzureFunctions.Notes
         [OpenApiParameter(name: "noteId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The noteId parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(NotesModel), Description = "The OK response")]
         public async Task<IActionResult> Trash(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "FundooNotes/IsTrash")] HttpRequest req, string noteId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "FundooNotes/IsTrash/{noteId}")] HttpRequest req, string noteId)
         {
             var result = _JWTService.ValidateJWT(req);
             if (!result.IsValid)
@@ -176,8 +176,24 @@ namespace FundooNotesMicroservices.AzureFunctions.Notes
             return new OkObjectResult(_noteServices.IsTrash(noteId));
         }
 
+        [FunctionName("DeleteNote")]
+        [OpenApiOperation(operationId: "Delete", tags: new[] { "Notes" })]
+        [OpenApiSecurity("JWT Bearer Token", SecuritySchemeType.ApiKey, Name = "token", In = OpenApiSecurityLocationType.Header)]
+        [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The id parameter")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(NotesModel), Description = "The OK response")]
+        public async Task<IActionResult> DeleteNote(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "FundooNotes/DeleteNote/{noteId}")] HttpRequest req, string noteId)
+        {
+            var result = _JWTService.ValidateJWT(req);
+            if (!result.IsValid)
+            {
+                return new UnauthorizedResult();
+            }
 
-
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            dynamic data = JsonConvert.DeserializeObject<NotesModel>(requestBody);
+            return new OkObjectResult(_noteServices.DeleteNote(noteId));
+        }
     }
 }
 
