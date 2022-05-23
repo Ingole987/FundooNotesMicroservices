@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundooNotesMicroservices.Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundooNotesMicroservices.AzureFunctions.Users", "FundooNotesMicroservices.AzureFunctions.Users\FundooNotesMicroservices.AzureFunctions.Users.csproj", "{6DC58BCB-908C-4106-8E10-DE2A54177F5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FundooNotesMicroservices.AzureFunctions.Notes", "FundooNotesMicroservices.AzureFunctions.Notes\FundooNotesMicroservices.AzureFunctions.Notes.csproj", "{DF687F21-A1BD-4CAD-871E-3389BDE0B8A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundooNotesMicroservices.AzureFunctions.Notes", "FundooNotesMicroservices.AzureFunctions.Notes\FundooNotesMicroservices.AzureFunctions.Notes.csproj", "{DF687F21-A1BD-4CAD-871E-3389BDE0B8A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

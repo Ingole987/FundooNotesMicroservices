@@ -1,4 +1,5 @@
 ﻿using FundooNotesMicroservices.Models;
+using FundooNotesMicroservices.Models.Notes;
 using FundooNotesMicroservices.Shared.Interface;
 using Microsoft.Azure.Cosmos;
 using System;
@@ -42,32 +43,38 @@ namespace FundooNotesMicroservices.Shared.Service
 
             //});
         }
-       
 
-        public NotesModel CreateNotes(NotesModel userNotes, string Id)
+
+        public async Task<NotesModel> CreateNotes(NotesModel userNotes, string id)
         {
             try
             {
-                UserModel userModel = new UserModel();
                 if (string.IsNullOrEmpty(_containerName))
                     throw new Exception("No Digital Main collection defined!");
-                userModel.Id = Guid.NewGuid().ToString();
-                using (var result = _cosmosContainer.CreateItemAsync<NotesModel>(userNotes, new PartitionKey(userNotes.NoteId)))
+                var note = new NotesModel()
                 {
-                    return result.Result.Resource;
+                    NoteId = Guid.NewGuid().ToString(),
+                    Title = userNotes.Title,
+                    Description = userNotes.Description,
+                    Color = userNotes.Color,
+                    Image = userNotes.Image,
+                    IsArchive = userNotes.IsArchive,
+                    IsPinned = userNotes.IsPinned,
+                    IsTrash = userNotes.IsTrash,
+                    Reminder = DateTime.Now,
+                    CreatedAt = DateTime.Now,
+
+                };
+
+                var result = await _cosmosContainer.CreateItemAsync(note, new PartitionKey(note.NoteId.ToString()));
+                {
+                    return result;
                 }
             }
             catch (Exception ex)
             {
-                // Detect a `Resource Not Found` exception...do not treat it as error
-                if (ex.InnerException != null && !string.IsNullOrEmpty(ex.InnerException.Message) && ex.InnerException.Message.IndexOf("Resource Not Found") != -1)
-                {
-                    return null;
-                }
-                else
-                {
-                    throw new Exception(ex.Message, ex);
-                }
+                throw new Exception(ex.Message, ex);
+
             }
         }
 
@@ -134,7 +141,7 @@ namespace FundooNotesMicroservices.Shared.Service
 
 
 
-        public async Task<NotesModel> UpdateNote(NotesModel updateNote, string noteId)
+        public async Task<NotesModel> UpdateNote(NotesUpdate updateNote, string noteId)
         {
             if (noteId == null)
             {
@@ -150,7 +157,7 @@ namespace FundooNotesMicroservices.Shared.Service
                 result.Description = updateNote.Description;
                 result.Color = updateNote.Color;
                 result.Image = updateNote.Image;
-                result.ModifiedAt = DateTime.Now;
+                result.ModifiedAt = updateNote.ModifiedAt = DateTime.Now;
                 var response = await _cosmosContainer.ReplaceItemAsync<NotesModel>(result, result.NoteId, new PartitionKey(result.NoteId));
                 return response.Resource;
             }

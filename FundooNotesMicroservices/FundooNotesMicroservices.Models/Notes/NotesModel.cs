@@ -9,7 +9,7 @@ namespace FundooNotesMicroservices.Models
 {
     public class NotesModel
     {
-        [JsonProperty("NoteId", ReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
+        [JsonProperty("id", ReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
         public string NoteId { get; set; } = "";
 
         [JsonProperty("title")]

@@ -1,4 +1,5 @@
 ﻿using FundooNotesMicroservices.Models;
+using FundooNotesMicroservices.Models.Notes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace FundooNotesMicroservices.Shared.Interface
 {
     public interface INoteInterface
     {
-        public NotesModel CreateNotes(NotesModel userNotes, string Id);
-        public Task<NotesModel> UpdateNote( NotesModel updateNote, string noteId);
+        public Task<NotesModel> CreateNotes(NotesModel userNotes, string Id);
+        public Task<NotesModel> UpdateNote( NotesUpdate updateNote, string noteId);
         public NotesModel DeleteNote(string noteId);
         public NotesModel GetNoteById(string noteId);
         public Task<List<NotesModel>> GetAllNotes();
